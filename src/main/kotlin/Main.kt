@@ -2,15 +2,16 @@ import algorithm.GetMAX
 import simulation.SimulationExecutor
 import simulation.SimulationResult
 import task.TaskDataGenerator
+import task.TaskDataGeneratorInputParameters
 
 fun main() {
     val results = List(100) {
         run(averageTaskIntervalDelta = it.toDouble())
-    }
+    }.toMap()
     println(results)
 }
 
-fun run(averageTaskIntervalDelta: Double): SimulationResult {
+fun run(averageTaskIntervalDelta: Double): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
     val availableNodesNumber = 5
     val taskDataGenerator = TaskDataGenerator(
         taskCount = 100,
@@ -22,8 +23,8 @@ fun run(averageTaskIntervalDelta: Double): SimulationResult {
         averageTaskIntervalDelta = averageTaskIntervalDelta,
         randomSeed = 23
     )
-    val tasks = taskDataGenerator.generate()
+    val taskDataGeneratorOutput = taskDataGenerator.generate()
 
     val simulationExecutor = SimulationExecutor(GetMAX, availableNodesNumber)
-    return simulationExecutor.execute(tasks)
+    return taskDataGeneratorOutput.inputParameters to simulationExecutor.execute(taskDataGeneratorOutput.tasks)
 }

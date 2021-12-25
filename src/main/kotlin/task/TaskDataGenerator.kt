@@ -17,7 +17,7 @@ class TaskDataGenerator(
     bigLoadAverageTaskInterval: Double,
     smallLoadAverageTaskInterval: Double,
     private val averageTaskIntervalDelta: Double = 0.0,
-    randomSeed: Int
+    private val randomSeed: Int
 ) {
     private val bigLoadAverageTaskInterval = bigLoadAverageTaskInterval - averageTaskIntervalDelta
     private val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
@@ -43,9 +43,9 @@ class TaskDataGenerator(
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
     }
 
-    fun generate(): List<TaskDefinition> {
+    fun generate(): TaskDataGeneratorOutput {
         var timer = 0.0
-        return (1..taskCount).map { id ->
+        val tasks = (1..taskCount).map { id ->
             val nextTaskInterval =
                 if (id % 2 == 0)
                     bigLoadTaskIntervalExponentialDistribution.sample().round(2)
@@ -68,5 +68,21 @@ class TaskDataGenerator(
             timer = (timer + task.nextTaskInterval).round(2)
             task
         }
+        return TaskDataGeneratorOutput(
+            inputParameters = prepareTaskDataGeneratorInputParameters(),
+            tasks = tasks
+        )
     }
+
+    private fun prepareTaskDataGeneratorInputParameters() =
+        TaskDataGeneratorInputParameters(
+            taskCount = taskCount,
+            taskMaxNumberOfWantedNodes = taskMaxNumberOfWantedNodes,
+            smallTaskAverageProcessingTime = smallTaskAverageProcessingTime,
+            bigTaskAverageProcessingTime = bigTaskAverageProcessingTime,
+            averageTaskIntervalDelta = averageTaskIntervalDelta,
+            bigLoadAverageTaskInterval = bigLoadAverageTaskInterval,
+            smallLoadAverageTaskInterval = smallLoadAverageTaskInterval,
+            randomSeed = randomSeed,
+        )
 }
