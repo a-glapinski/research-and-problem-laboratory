@@ -1,6 +1,5 @@
 package task
 
-import kotlinx.serialization.Serializable
 import round
 import kotlin.random.Random
 
@@ -12,7 +11,6 @@ interface Task {
     val nextTaskInterval: Double
 }
 
-@Serializable
 data class TaskDefinition(
     override val id: Int,
     override val taskSize: TaskSize,
@@ -21,7 +19,6 @@ data class TaskDefinition(
     override val nextTaskInterval: Double
 ) : Task
 
-@Serializable
 data class TaskSize(
     val sequentialTime: Double,
     val parallelTime: Double

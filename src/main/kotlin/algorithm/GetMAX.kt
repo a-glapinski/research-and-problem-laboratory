@@ -1,14 +1,15 @@
 package algorithm
 
 import round
-import simulation.SimulationResult
 import task.Task
 import task.TaskDefinition
 import task.TaskSize
 import task.calculateRealProcessingTime
 
-object GetMAX : SchedulingAlgorithm {
-    override fun run(tasks: List<TaskDefinition>, availableNodesNumber: Int, C: Double): SimulationResult {
+object GetMAX : SchedulingAlgorithm<GetMAXTask> {
+    override val statsCalculator = GetMAXStatsCalculator
+
+    override fun run(tasks: List<TaskDefinition>, availableNodesNumber: Int, C: Double): List<GetMAXTask> {
         var timer = 0.0
         var currentlyAvailableNodesNumber = availableNodesNumber
 
@@ -46,7 +47,7 @@ object GetMAX : SchedulingAlgorithm {
             }
         }
 
-        return SimulationResult(processedTasks = finished)
+        return finished
     }
 
     private fun calculateNextEventTime(tasks: List<GetMAXTask>, timer: Double): Double {
