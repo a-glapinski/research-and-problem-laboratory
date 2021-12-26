@@ -1,7 +1,10 @@
 package simulation
 
 data class SimulationStats(
-    val averageLoad: Double,
+    val averageResponseTime: Double,
     val averageProcessingTime: Double,
-    val taskIntervalCoefficientOfVariation: Double
+    val averageDelayTime: Double,
+    val averageLoad: Double,
+    val taskIntervalCoefficientOfVariation: Double,
+    val taskSizeCoefficientOfVariation: Double
 )

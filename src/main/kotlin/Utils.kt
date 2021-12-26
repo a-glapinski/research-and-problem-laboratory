@@ -14,7 +14,7 @@ value class Probability(val value: Double) {
     }
 }
 
-fun Double.round(scale: Int): Double =
+fun Double.round(scale: Int) =
     Precision.round(this, scale)
 
 fun List<Double>.standardDeviation() =

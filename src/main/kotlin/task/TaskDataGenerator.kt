@@ -10,17 +10,25 @@ import kotlin.random.asJavaRandom
 import kotlin.random.nextInt
 
 class TaskDataGenerator(
-    private val taskCount: Int,
-    private val taskMaxNumberOfWantedNodes: Int,
-    private val smallTaskAverageProcessingTime: Double,
-    private val bigTaskAverageProcessingTime: Double,
+    val taskCount: Int,
+    val taskMaxNumberOfWantedNodes: Int,
+    val smallTaskAverageProcessingTime: Double,
+    val bigTaskAverageProcessingTime: Double,
     bigLoadAverageTaskInterval: Double,
     smallLoadAverageTaskInterval: Double,
-    private val averageTaskIntervalDelta: Double = 0.0,
-    private val randomSeed: Int
+    val averageTaskIntervalDelta: Double = 0.0,
+    val randomSeed: Int
 ) {
-    private val bigLoadAverageTaskInterval = bigLoadAverageTaskInterval - averageTaskIntervalDelta
-    private val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
+    val bigLoadAverageTaskInterval = bigLoadAverageTaskInterval - averageTaskIntervalDelta
+    val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
+
+    init {
+        require(taskCount > 0)
+        require(taskMaxNumberOfWantedNodes > 0)
+        require(smallTaskAverageProcessingTime < bigTaskAverageProcessingTime)
+        require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
+        require(averageTaskIntervalDelta < bigLoadAverageTaskInterval)
+    }
 
     private val random = Random(randomSeed)
     private val randomGenerator: RandomGenerator =
@@ -35,13 +43,6 @@ class TaskDataGenerator(
         erlangDistribution(randomGenerator, shape = 1, scale = bigTaskAverageProcessingTime)
     private val smallTaskErlangDistribution =
         erlangDistribution(randomGenerator, shape = 1, scale = smallTaskAverageProcessingTime)
-
-    init {
-        require(taskCount > 0)
-        require(taskMaxNumberOfWantedNodes > 0)
-        require(smallTaskAverageProcessingTime < bigTaskAverageProcessingTime)
-        require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
-    }
 
     fun generate(): TaskDataGeneratorOutput {
         var timer = 0.0
@@ -69,20 +70,8 @@ class TaskDataGenerator(
             task
         }
         return TaskDataGeneratorOutput(
-            inputParameters = prepareTaskDataGeneratorInputParameters(),
+            inputParameters = TaskDataGeneratorInputParameters(this),
             tasks = tasks
         )
     }
-
-    private fun prepareTaskDataGeneratorInputParameters() =
-        TaskDataGeneratorInputParameters(
-            taskCount = taskCount,
-            taskMaxNumberOfWantedNodes = taskMaxNumberOfWantedNodes,
-            smallTaskAverageProcessingTime = smallTaskAverageProcessingTime,
-            bigTaskAverageProcessingTime = bigTaskAverageProcessingTime,
-            averageTaskIntervalDelta = averageTaskIntervalDelta,
-            bigLoadAverageTaskInterval = bigLoadAverageTaskInterval,
-            smallLoadAverageTaskInterval = smallLoadAverageTaskInterval,
-            randomSeed = randomSeed,
-        )
 }

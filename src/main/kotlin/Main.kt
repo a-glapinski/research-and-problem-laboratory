@@ -5,21 +5,21 @@ import task.TaskDataGenerator
 import task.TaskDataGeneratorInputParameters
 
 fun main() {
-    val results = List(100) {
-        run(averageTaskIntervalDelta = it.toDouble())
+    val results = List(1000) {
+        run(averageTaskIntervalDelta = it.toDouble() / 50)
     }.toMap()
     println(results)
 }
 
 fun run(averageTaskIntervalDelta: Double): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
-    val availableNodesNumber = 5
+    val availableNodesNumber = 25
     val taskDataGenerator = TaskDataGenerator(
         taskCount = 100,
-        taskMaxNumberOfWantedNodes = 30,
+        taskMaxNumberOfWantedNodes = 25,
         smallTaskAverageProcessingTime = 50.0,
-        bigTaskAverageProcessingTime = 250.0,
-        bigLoadAverageTaskInterval = 125.0,
-        smallLoadAverageTaskInterval = 250.0,
+        bigTaskAverageProcessingTime = 100.0,
+        bigLoadAverageTaskInterval = 30.0,
+        smallLoadAverageTaskInterval = 70.0,
         averageTaskIntervalDelta = averageTaskIntervalDelta,
         randomSeed = 23
     )
