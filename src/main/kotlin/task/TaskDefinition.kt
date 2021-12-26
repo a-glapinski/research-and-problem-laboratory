@@ -28,5 +28,5 @@ data class TaskSize(
         parallelTime = time
     )
 
-    val totalTime get() = sequentialTime + parallelTime
+    val totalTime get() = (sequentialTime + parallelTime).round(2)
 }

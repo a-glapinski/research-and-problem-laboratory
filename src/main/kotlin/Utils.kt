@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.apache.commons.math3.distribution.GammaDistribution
 import org.apache.commons.math3.random.RandomGenerator
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation
@@ -22,3 +23,6 @@ fun List<Double>.standardDeviation() =
 
 fun List<Double>.coefficientOfVariation() =
     this.standardDeviation() / this.average()
+
+fun Any.toJson(): String =
+    jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this)
