@@ -16,8 +16,9 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
     implementation("org.apache.commons:commons-math3:3.6.1")
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:2.2.1")
     implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.2.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1")
 }
 
 

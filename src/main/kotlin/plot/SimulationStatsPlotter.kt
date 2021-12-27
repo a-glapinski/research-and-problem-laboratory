@@ -80,13 +80,13 @@ object SimulationStatsPlotter {
             )
         )
 
-//    savePlot(
-//        filename = "p9.png",
-//        data = listOf(
-//            "Task interval CV" to taskIntervalCoefficientOfVariation,
-//            "Task size CV" to taskSizeCoefficientOfVariation
+//        savePlot(
+//            filename = "p9.png",
+//            data = listOf(
+//                "Task interval CV" to taskIntervalCoefficientOfVariation,
+//                "Task size CV" to taskSizeCoefficientOfVariation
+//            )
 //        )
-//    )
     }
 
     private fun savePlot(data: List<Pair<String, *>>, filename: String) {

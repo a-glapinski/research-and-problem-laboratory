@@ -15,12 +15,15 @@ data class TaskSize(
     val sequentialTime: Double,
     val parallelTime: Double
 ) {
-    constructor(random: Random, time: Double) : this(
-        sequentialTime = (time * random.nextDouble(from = 0.05, until = 0.20)).round(2),
-        parallelTime = time
-    )
-
     val totalTime get() = (sequentialTime + parallelTime).round(2)
+
+    companion object {
+        operator fun invoke(random: Random, totalTime: Double): TaskSize {
+            val sequentialTime = (totalTime * random.nextDouble(from = 0.05, until = 0.20)).round(2)
+            val parallelTime = (totalTime - sequentialTime).round(2)
+            return TaskSize(sequentialTime, parallelTime)
+        }
+    }
 }
 
 fun Task.calculateRealProcessingTime(allocatedNodesNumber: Int, C: Double): Double {

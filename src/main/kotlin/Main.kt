@@ -7,7 +7,7 @@ import task.TaskDataGeneratorInputParameters
 
 fun main() {
     val results = List(20) {
-        run(averageTaskIntervalDelta = it.toDouble())
+        run(averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0)
     }.toMap()
 //    File("results.json").writeText(results.toJson())
 
@@ -15,7 +15,10 @@ fun main() {
     SimulationStatsPlotter.plot(stats)
 }
 
-fun run(averageTaskIntervalDelta: Double): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
+fun run(
+    averageTaskIntervalDelta: Double,
+    averageTaskSizeDelta: Double
+): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
     val availableNodesNumber = 30
     val taskDataGenerator = TaskDataGenerator(
         randomSeed = 23,
@@ -26,7 +29,8 @@ fun run(averageTaskIntervalDelta: Double): Pair<TaskDataGeneratorInputParameters
         bigTaskAverageProcessingTime = 120.0,
         bigLoadAverageTaskInterval = 25.0,
         smallLoadAverageTaskInterval = 70.0,
-        averageTaskIntervalDelta = averageTaskIntervalDelta
+        averageTaskIntervalDelta = averageTaskIntervalDelta,
+        averageTaskSizeDelta = averageTaskSizeDelta
     )
     val taskDataGeneratorOutput = taskDataGenerator.generate()
 
