@@ -10,14 +10,14 @@ import kotlin.random.asJavaRandom
 import kotlin.random.nextInt
 
 class TaskDataGenerator(
+    val randomSeed: Int,
     val taskCount: Int,
     val taskMaxNumberOfWantedNodes: Int,
     val smallTaskAverageProcessingTime: Double,
     val bigTaskAverageProcessingTime: Double,
     bigLoadAverageTaskInterval: Double,
     smallLoadAverageTaskInterval: Double,
-    val averageTaskIntervalDelta: Double = 0.0,
-    val randomSeed: Int
+    val averageTaskIntervalDelta: Double = 0.0
 ) {
     val bigLoadAverageTaskInterval = bigLoadAverageTaskInterval - averageTaskIntervalDelta
     val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
