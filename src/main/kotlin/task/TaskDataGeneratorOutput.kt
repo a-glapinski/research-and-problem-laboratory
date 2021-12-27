@@ -6,7 +6,8 @@ data class TaskDataGeneratorOutput(
 )
 
 data class TaskDataGeneratorInputParameters(
-    val taskCount: Int,
+    val totalTaskCount: Int,
+    val phaseCount: Int,
     val taskMaxNumberOfWantedNodes: Int,
     val smallTaskAverageProcessingTime: Double,
     val bigTaskAverageProcessingTime: Double,
@@ -16,7 +17,8 @@ data class TaskDataGeneratorInputParameters(
     val randomSeed: Int
 ) {
     constructor(taskDataGenerator: TaskDataGenerator) : this(
-        taskCount = taskDataGenerator.taskCount,
+        totalTaskCount = taskDataGenerator.totalTaskCount,
+        phaseCount = taskDataGenerator.phaseCount,
         taskMaxNumberOfWantedNodes = taskDataGenerator.taskMaxNumberOfWantedNodes,
         smallTaskAverageProcessingTime = taskDataGenerator.smallTaskAverageProcessingTime,
         bigTaskAverageProcessingTime = taskDataGenerator.bigTaskAverageProcessingTime,

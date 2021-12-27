@@ -11,7 +11,8 @@ import kotlin.random.nextInt
 
 class TaskDataGenerator(
     val randomSeed: Int,
-    val taskCount: Int,
+    val totalTaskCount: Int,
+    val phaseCount: Int,
     val taskMaxNumberOfWantedNodes: Int,
     val smallTaskAverageProcessingTime: Double,
     val bigTaskAverageProcessingTime: Double,
@@ -23,7 +24,8 @@ class TaskDataGenerator(
     val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
 
     init {
-        require(taskCount > 0)
+        require(totalTaskCount > 0)
+        require(phaseCount > 0)
         require(taskMaxNumberOfWantedNodes > 0)
         require(smallTaskAverageProcessingTime < bigTaskAverageProcessingTime)
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
@@ -45,30 +47,35 @@ class TaskDataGenerator(
         erlangDistribution(randomGenerator, shape = 1, scale = smallTaskAverageProcessingTime)
 
     fun generate(): TaskDataGeneratorOutput {
+        val taskPerPhaseCount = totalTaskCount / phaseCount
         var timer = 0.0
-        val tasks = (1..taskCount).map { id ->
-            val nextTaskInterval =
-                if (id % 2 == 0)
-                    bigLoadTaskIntervalExponentialDistribution.sample().round(2)
-                else
-                    smallLoadTaskIntervalExponentialDistribution.sample().round(2)
+        var taskId = 0
+        val tasks = (0 until phaseCount).flatMap { i ->
+            (0 until taskPerPhaseCount).map {
+                val nextTaskInterval =
+                    if (i % 2 == 0)
+                        bigLoadTaskIntervalExponentialDistribution.sample().round(2)
+                    else
+                        smallLoadTaskIntervalExponentialDistribution.sample().round(2)
 
-            val taskSize =
-                if (id % 2 == 0)
-                    TaskSize(random, time = bigTaskErlangDistribution.sample().round(2))
-                else
-                    TaskSize(random, time = smallTaskErlangDistribution.sample().round(2))
+                val taskSize =
+                    if (i % 2 == 0)
+                        TaskSize(random, time = bigTaskErlangDistribution.sample().round(2))
+                    else
+                        TaskSize(random, time = smallTaskErlangDistribution.sample().round(2))
 
-            val task = TaskDefinition(
-                id = id,
-                taskSize = taskSize,
-                maxNumberOfWantedNodes = random.nextInt(1..taskMaxNumberOfWantedNodes),
-                appearedAt = timer,
-                nextTaskInterval = nextTaskInterval
-            )
-            timer = (timer + task.nextTaskInterval).round(2)
-            task
+                val task = TaskDefinition(
+                    id = ++taskId,
+                    taskSize = taskSize,
+                    maxNumberOfWantedNodes = random.nextInt(1..taskMaxNumberOfWantedNodes),
+                    appearedAt = timer,
+                    nextTaskInterval = nextTaskInterval
+                )
+                timer = (timer + task.nextTaskInterval).round(2)
+                task
+            }
         }
+
         return TaskDataGeneratorOutput(
             inputParameters = TaskDataGeneratorInputParameters(this),
             tasks = tasks

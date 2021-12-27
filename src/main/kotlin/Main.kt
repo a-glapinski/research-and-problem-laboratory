@@ -19,7 +19,8 @@ fun run(averageTaskIntervalDelta: Double): Pair<TaskDataGeneratorInputParameters
     val availableNodesNumber = 30
     val taskDataGenerator = TaskDataGenerator(
         randomSeed = 23,
-        taskCount = 100,
+        totalTaskCount = 100,
+        phaseCount = 4,
         taskMaxNumberOfWantedNodes = 25,
         smallTaskAverageProcessingTime = 50.0,
         bigTaskAverageProcessingTime = 120.0,
