@@ -1,21 +1,24 @@
 import algorithm.GetMAX
+import algorithm.SchedulingAlgorithm
 import plot.SimulationStatsPlotter
 import simulation.SimulationExecutor
 import simulation.SimulationResult
+import task.Task
 import task.TaskDataGenerator
 import task.TaskDataGeneratorInputParameters
 
 fun main() {
     val results = List(20) {
-        run(averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0)
-    }.toMap()
+        run(GetMAX, averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0)
+    }
 //    File("results.json").writeText(results.toJson())
 
-    val stats = results.values.map { it.stats }
+    val stats = results.map { it.second.stats }
     SimulationStatsPlotter.plot(stats)
 }
 
-fun run(
+fun <T : Task> run(
+    schedulingAlgorithm: SchedulingAlgorithm<T>,
     averageTaskIntervalDelta: Double,
     averageTaskSizeDelta: Double
 ): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
@@ -33,7 +36,6 @@ fun run(
         averageTaskSizeDelta = averageTaskSizeDelta
     )
     val taskDataGeneratorOutput = taskDataGenerator.generate()
-
-    val simulationExecutor = SimulationExecutor(GetMAX, availableNodesNumber)
+    val simulationExecutor = SimulationExecutor(schedulingAlgorithm, availableNodesNumber)
     return taskDataGeneratorOutput.inputParameters to simulationExecutor.execute(taskDataGeneratorOutput.tasks)
 }
