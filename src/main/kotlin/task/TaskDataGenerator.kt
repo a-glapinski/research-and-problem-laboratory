@@ -14,15 +14,15 @@ class TaskDataGenerator(
     val totalTaskCount: Int,
     val phaseCount: Int,
     val taskMaxNumberOfWantedNodes: Int,
-    smallTaskAverageProcessingTime: Double,
-    bigTaskAverageProcessingTime: Double,
+    smallTaskAverageSize: Double,
+    bigTaskAverageSize: Double,
     bigLoadAverageTaskInterval: Double,
     smallLoadAverageTaskInterval: Double,
     val averageTaskIntervalDelta: Double = 0.0,
     val averageTaskSizeDelta: Double = 0.0
 ) {
-    val smallTaskAverageProcessingTime = smallTaskAverageProcessingTime - averageTaskIntervalDelta
-    val bigTaskAverageProcessingTime = bigTaskAverageProcessingTime + averageTaskSizeDelta
+    val smallTaskAverageSize = smallTaskAverageSize - averageTaskSizeDelta
+    val bigTaskAverageSize = bigTaskAverageSize + averageTaskSizeDelta
 
     val bigLoadAverageTaskInterval = bigLoadAverageTaskInterval - averageTaskIntervalDelta
     val smallLoadAverageTaskInterval = smallLoadAverageTaskInterval + averageTaskIntervalDelta
@@ -31,10 +31,10 @@ class TaskDataGenerator(
         require(totalTaskCount > 0)
         require(phaseCount > 0)
         require(taskMaxNumberOfWantedNodes > 0)
-        require(this.smallTaskAverageProcessingTime < this.bigTaskAverageProcessingTime)
+        require(this.smallTaskAverageSize < this.bigTaskAverageSize)
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
         require(averageTaskIntervalDelta < bigLoadAverageTaskInterval)
-        require(averageTaskSizeDelta < smallTaskAverageProcessingTime)
+        require(averageTaskSizeDelta < smallTaskAverageSize)
         require(listOf(averageTaskIntervalDelta, averageTaskSizeDelta).any { it == 0.0 })
     }
 
@@ -48,9 +48,9 @@ class TaskDataGenerator(
         ExponentialDistribution(randomGenerator, this.smallLoadAverageTaskInterval)
 
     private val bigTaskSizeErlangDistribution =
-        erlangDistribution(randomGenerator, shape = 1, scale = this.bigTaskAverageProcessingTime)
+        erlangDistribution(randomGenerator, shape = 1, scale = this.bigTaskAverageSize)
     private val smallTaskSizeErlangDistribution =
-        erlangDistribution(randomGenerator, shape = 1, scale = this.smallTaskAverageProcessingTime)
+        erlangDistribution(randomGenerator, shape = 1, scale = this.smallTaskAverageSize)
 
     fun generate(): TaskDataGeneratorOutput {
         val taskPerPhaseCount = totalTaskCount / phaseCount
