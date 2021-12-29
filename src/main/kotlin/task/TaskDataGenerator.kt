@@ -38,20 +38,6 @@ class TaskDataGenerator(
         require(listOf(averageTaskIntervalDelta, averageTaskSizeDelta).any { it == 0.0 })
     }
 
-    private val random = Random(randomSeed)
-    private val randomGenerator: RandomGenerator =
-        RandomGeneratorFactory.createRandomGenerator(random.asJavaRandom())
-
-    private val bigLoadTaskIntervalExponentialDistribution =
-        ExponentialDistribution(randomGenerator, this.bigLoadAverageTaskInterval)
-    private val smallLoadTaskIntervalExponentialDistribution =
-        ExponentialDistribution(randomGenerator, this.smallLoadAverageTaskInterval)
-
-    private val bigTaskSizeErlangDistribution =
-        erlangDistribution(randomGenerator, shape = 1, scale = this.bigTaskAverageSize)
-    private val smallTaskSizeErlangDistribution =
-        erlangDistribution(randomGenerator, shape = 1, scale = this.smallTaskAverageSize)
-
     fun generate(): TaskDataGeneratorOutput {
         val taskPerPhaseCount = totalTaskCount / phaseCount
         var timer = 0.0
@@ -66,14 +52,14 @@ class TaskDataGenerator(
 
                 val taskSize =
                     if (i % 2 == 0)
-                        TaskSize(random, totalTime = bigTaskSizeErlangDistribution.sample().round(2))
+                        TaskSize(taskSizeRandom, totalTime = bigTaskSizeErlangDistribution.sample().round(2))
                     else
-                        TaskSize(random, totalTime = smallTaskSizeErlangDistribution.sample().round(2))
+                        TaskSize(taskSizeRandom, totalTime = smallTaskSizeErlangDistribution.sample().round(2))
 
                 val task = TaskDefinition(
                     id = ++taskId,
                     taskSize = taskSize,
-                    maxNumberOfWantedNodes = random.nextInt(1..taskMaxNumberOfWantedNodes),
+                    maxNumberOfWantedNodes = maxNumberOfWantedNodesRandom.nextInt(1..taskMaxNumberOfWantedNodes),
                     appearedAt = timer,
                     nextTaskInterval = nextTaskInterval
                 )
@@ -87,4 +73,23 @@ class TaskDataGenerator(
             tasks = tasks
         )
     }
+
+    private val taskSizeRandom = getRandom()
+    private val maxNumberOfWantedNodesRandom = getRandom()
+
+    private val bigLoadTaskIntervalExponentialDistribution =
+        ExponentialDistribution(getRandomGenerator(), this.bigLoadAverageTaskInterval)
+    private val smallLoadTaskIntervalExponentialDistribution =
+        ExponentialDistribution(getRandomGenerator(), this.smallLoadAverageTaskInterval)
+
+    private val bigTaskSizeErlangDistribution =
+        erlangDistribution(getRandomGenerator(), shape = 1, scale = this.bigTaskAverageSize)
+    private val smallTaskSizeErlangDistribution =
+        erlangDistribution(getRandomGenerator(), shape = 1, scale = this.smallTaskAverageSize)
+
+    private fun getRandomGenerator(): RandomGenerator =
+        RandomGeneratorFactory.createRandomGenerator(getRandom().asJavaRandom())
+
+    private fun getRandom(): Random =
+        Random(randomSeed)
 }
