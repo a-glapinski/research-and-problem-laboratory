@@ -24,14 +24,9 @@ object GetMAXStatsCalculator : SimulationStatsCalculator<GetMAXTask> {
         processedTasks.map { it.processingStartedAt!! - it.appearedAt }.average()
 
     private fun calculateAverageLoad(processedTasks: List<GetMAXTask>, availableNodesNumber: Int): Double {
-        val start = processedTasks.minOf { it.appearedAt }
-        val end = processedTasks.maxOf { it.processingEndedAt!! }
-        val simulationDuration = end - start
-
-        // Not sure what is a correct way to calculate average load
-//        val processingTime = processedTasks.sumOf { it.taskSize.parallelTime }
-        val processingTime = processedTasks.sumOf { (it.processingEndedAt!! - it.processingStartedAt!!) * it.maxNumberOfWantedNodes }
-        return processingTime / (simulationDuration * availableNodesNumber)
+        val lambda = processedTasks.count() / processedTasks.maxOf { it.appearedAt }
+        val mi = 1 / processedTasks.map { it.taskSize.totalTime }.average()
+        return lambda / (mi * availableNodesNumber)
     }
 
     private fun calculateAverageTaskInterval(processedTasks: List<GetMAXTask>) =
