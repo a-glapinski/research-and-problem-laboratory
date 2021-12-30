@@ -4,7 +4,6 @@ import round
 import task.Task
 import task.TaskDefinition
 import task.TaskSize
-import task.calculateRealProcessingTime
 
 object GetMAX : SchedulingAlgorithm<GetMAXTask> {
     override val statsCalculator = GetMAXStatsCalculator
@@ -28,7 +27,7 @@ object GetMAX : SchedulingAlgorithm<GetMAXTask> {
             waitingTask?.copy(
                 processingStartedAt = timer,
                 processingEndedAt =
-                (timer + waitingTask.calculateRealProcessingTime(waitingTask.maxNumberOfWantedNodes, C)).round(2)
+                (timer + waitingTask.calculateProcessingTime(waitingTask.maxNumberOfWantedNodes, C)).round(2)
             )?.let { task ->
                 processing.add(task)
                 currentlyAvailableNodesNumber -= task.maxNumberOfWantedNodes

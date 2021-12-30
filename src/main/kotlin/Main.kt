@@ -25,7 +25,7 @@ fun <T : Task> run(
     val availableNodesNumber = 30
     val taskDataGenerator = TaskDataGenerator(
         randomSeed = 23,
-        totalTaskCount = 100,
+        totalTaskCount = 5000,
         phaseCount = 4,
         taskMaxNumberOfWantedNodes = 25,
         smallTaskAverageSize = 50.0,

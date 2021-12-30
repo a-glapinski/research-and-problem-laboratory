@@ -35,7 +35,7 @@ class TaskDataGenerator(
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
         require(averageTaskIntervalDelta < bigLoadAverageTaskInterval)
         require(averageTaskSizeDelta < smallTaskAverageSize)
-        require(listOf(averageTaskIntervalDelta, averageTaskSizeDelta).any { it == 0.0 })
+//        require(listOf(averageTaskIntervalDelta, averageTaskSizeDelta).any { it == 0.0 })
     }
 
     fun generate(): TaskDataGeneratorOutput {
