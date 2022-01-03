@@ -6,12 +6,12 @@ import simulation.SimulationResult
 import task.Task
 import task.TaskDataGenerator
 import task.TaskDataGeneratorInputParameters
+import kotlin.math.pow
 
 fun main() {
-    val results = List(20) {
-        run(GetMAX, averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0)
+    val results = List(6) {
+        run(GetMAX, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = 0.0, loadMultiplier = it + 1)
     }
-//    File("results.json").writeText(results.toJson())
 
     val stats = results.map { it.second.stats }
     SimulationStatsPlotter.plot(stats)
@@ -20,7 +20,8 @@ fun main() {
 fun <T : Task> run(
     schedulingAlgorithm: SchedulingAlgorithm<T>,
     averageTaskIntervalDelta: Double,
-    averageTaskSizeDelta: Double
+    averageTaskSizeDelta: Double,
+    loadMultiplier: Int
 ): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
     val availableNodesNumber = 30
     val taskDataGenerator = TaskDataGenerator(
@@ -30,8 +31,8 @@ fun <T : Task> run(
         taskMaxNumberOfWantedNodes = 25,
         smallTaskAverageSize = 50.0,
         bigTaskAverageSize = 120.0,
-        bigLoadAverageTaskInterval = 25.0,
-        smallLoadAverageTaskInterval = 70.0,
+        bigLoadAverageTaskInterval = 50.0 / 2.0.pow(loadMultiplier - 1),
+        smallLoadAverageTaskInterval = 150.0 / 2.0.pow(loadMultiplier - 1),
         averageTaskIntervalDelta = averageTaskIntervalDelta,
         averageTaskSizeDelta = averageTaskSizeDelta
     )

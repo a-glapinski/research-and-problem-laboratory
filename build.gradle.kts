@@ -19,6 +19,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-common:2.2.1")
     implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.2.1")
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
 }
 
 

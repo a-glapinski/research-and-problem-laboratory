@@ -1,6 +1,7 @@
 package plot
 
 import jetbrains.letsPlot.export.ggsave
+import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
 import simulation.SimulationStats
@@ -136,5 +137,5 @@ object SimulationStatsPlotter {
     }
 
     private fun simulationPlot(data: List<Pair<String, *>>) =
-        ggplot(data.toMap()) { x = data[0].first; y = data[1].first } + geomPoint() // + geomSmooth()
+        ggplot(data.toMap()) { x = data[0].first; y = data[1].first } + geomPoint() + geomLine() // + geomSmooth()
 }
