@@ -20,7 +20,7 @@ object ParallelIfPossible : SchedulingAlgorithm<ParallelIfPossibleTask> {
         val active = mutableListOf<ParallelIfPossibleTask>().filter { it.appearedAt <= timer && it.processingEndedAt == null }.sortedBy { it.maxNumberOfWantedNodes }
 //        val finished = mutableListOf<ParallelIfPossibleTask>()
 
-        while (active != null) {
+        while (!active.filter { it.processingEndedAt == null }.isEmpty()) {
             // zerowanie przydzielonych node
             for (task in active) {
                 task.currentNumberOfNodes = 0
