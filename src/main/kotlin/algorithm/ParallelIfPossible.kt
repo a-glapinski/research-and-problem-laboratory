@@ -1,6 +1,5 @@
 package algorithm
 
-import algorithm.GetMAX.calculateProcessingTime
 import round
 import task.Task
 import task.TaskDefinition
@@ -12,74 +11,81 @@ object ParallelIfPossible : SchedulingAlgorithm<ParallelIfPossibleTask> {
     override fun run(tasks: List<TaskDefinition>, availableNodesNumber: Int, C: Double): List<ParallelIfPossibleTask> {
         var timer = 0.0
         var currentlyAvailableNodesNumber = availableNodesNumber
-        var lastTimeWindowLength = 0.0
+        var lastTimeWindowLength: Double
+        var nextEventTime: Double?
 
-        var nextEventTime = 0.0
+        val parallelIfPossibleTasks = tasks.map(::ParallelIfPossibleTask)
 
-//        val waiting = tasks.map(::ParallelIfPossibleTask).toMutableList()
-        val active = mutableListOf<ParallelIfPossibleTask>().filter { it.appearedAt <= timer && it.processingEndedAt == null }.sortedBy { it.maxNumberOfWantedNodes }
-//        val finished = mutableListOf<ParallelIfPossibleTask>()
-
-        while (!active.filter { it.processingEndedAt == null }.isEmpty()) {
+        while (parallelIfPossibleTasks.any { it.processingEndedAt == null }) {
+            val active = parallelIfPossibleTasks
+                .filter { it.appearedAt <= timer && it.processingEndedAt == null }
+                .sortedBy { it.maxNumberOfWantedNodes }
             // zerowanie przydzielonych node
             for (task in active) {
                 task.currentNumberOfNodes = 0
             }
-            currentlyAvailableNodesNumber = availableNodesNumber;
+            currentlyAvailableNodesNumber = availableNodesNumber
             // przydzielanie do zadań wolnych węzłów
             while (currentlyAvailableNodesNumber > 0) {
                 for (task in active) {
                     if (task.maxNumberOfWantedNodes != task.currentNumberOfNodes) {
-                        task.currentNumberOfNodes = task.currentNumberOfNodes?.plus(1)!!;
-                        currentlyAvailableNodesNumber -= 1;
+                        task.currentNumberOfNodes += 1
+                        currentlyAvailableNodesNumber -= 1
                         if (task.processingStartedAt == null) {
-                            task.processingStartedAt = timer;
+                            task.processingStartedAt = timer
                         }
                     }
                     if (currentlyAvailableNodesNumber == 0) {
-                        break;
+                        break
                     }
                 }
-                if (active.filter { it.maxNumberOfWantedNodes != it.currentNumberOfNodes }.isEmpty()) {
-                    break;
+                if (active.all { it.maxNumberOfWantedNodes == it.currentNumberOfNodes }) {
+                    break
                 }
             }
             // obliczanie przewidywanego czasu zakończenia zadania przy aktualnej liczbie węzłów
             for (task in active) {
-                task.estimatedProcessingEndedAt = calculateEstimatedProcessingEndedAt(task, timer);
+                task.estimatedProcessingEndedAt = calculateEstimatedProcessingEndedAt(task, timer).round(2)
             }
             // sprawdzić, kiedy wystąpi kolejne zdarzenie i uaktualnić completion_percentage
-            nextEventTime = calculateNextEventTime(tasks = active, timer);
+            nextEventTime = calculateNextEventTime(tasks = parallelIfPossibleTasks, timer)
             if (nextEventTime != null) {
-                lastTimeWindowLength = nextEventTime - timer;
-                timer = nextEventTime;
+                lastTimeWindowLength = (nextEventTime - timer).round(2)
+                timer = nextEventTime
             } else {
-                break;
+                break
             }
             for (task in active) {
-                updateTask(task, lastTimeWindowLength);
+                updateTask(task, lastTimeWindowLength, timer)
             }
         }
 
-        return active
+        return parallelIfPossibleTasks
     }
 
-    private fun updateTask(task: ParallelIfPossibleTask, lastTimeWindowLength: Double) {
-        task.processingParallelDone += lastTimeWindowLength * task.currentNumberOfNodes;
+    private fun updateTask(task: ParallelIfPossibleTask, lastTimeWindowLength: Double, timer: Double) {
+        task.processingParallelDone = (task.processingParallelDone + lastTimeWindowLength * task.currentNumberOfNodes).round(2)
+        if ((task.processingParallelDone / task.taskSize.parallelTime) > 0.999) {
+            task.processingParallelDone = task.taskSize.parallelTime
+            task.processingEndedAt = timer
+        }
     }
 
     private fun calculateEstimatedProcessingEndedAt(task: ParallelIfPossibleTask, timer: Double): Double {
-        return timer + calculateTimeToBeingCompleted(task);
+        return timer + calculateTimeToBeingCompleted(task)
     }
 
     private fun calculateTimeToBeingCompleted(task: ParallelIfPossibleTask): Double {
-        return task.taskSize.parallelTime/task.currentNumberOfNodes;
+        return ((task.taskSize.parallelTime - task.processingParallelDone) / task.currentNumberOfNodes).round(2)
     }
 
-    private fun calculateNextEventTime(tasks: List<ParallelIfPossibleTask>, timer: Double): Double {
+    private fun calculateNextEventTime(tasks: List<ParallelIfPossibleTask>, timer: Double): Double? {
         val tasksInProgress = tasks.mapNotNull { it.estimatedProcessingEndedAt }.filter { it > timer }
-        val tasksWaiting = tasks.mapNotNull { it.appearedAt }.filter { it > timer }
-        return (tasksInProgress + tasksWaiting).minOf { it }
+        val tasksWaiting = tasks.map { it.appearedAt }.filter { it > timer }
+        return (tasksInProgress + tasksWaiting)
+            .ifEmpty { return null }
+            .minOf { it }
+            .round(2)
     }
 }
 
@@ -93,7 +99,7 @@ data class ParallelIfPossibleTask(
     var processingParallelDone: Double = 0.0,
     var processingStartedAt: Double? = null,
     var processingEndedAt: Double? = null,
-    var estimatedProcessingEndedAt: Double?
+    var estimatedProcessingEndedAt: Double? = null
 ) : Task {
     constructor(taskDefinition: TaskDefinition) : this(
         id = taskDefinition.id,
