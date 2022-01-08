@@ -1,4 +1,5 @@
 import algorithm.GetMAX
+import algorithm.ParallelIfPossible
 import algorithm.SchedulingAlgorithm
 import plot.SimulationStatsPlotter
 import simulation.SimulationExecutor
@@ -10,7 +11,7 @@ import kotlin.math.pow
 
 fun main() {
     val results = List(6) {
-        run(GetMAX, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = 0.0, loadMultiplier = it + 1)
+        run(ParallelIfPossible, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = 0.0, loadMultiplier = it + 1)
     }
 
     val stats = results.map { it.second.stats }
