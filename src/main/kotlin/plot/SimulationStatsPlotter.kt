@@ -4,10 +4,11 @@ import jetbrains.letsPlot.export.ggsave
 import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
+import jetbrains.letsPlot.label.ggtitle
 import simulation.SimulationStats
 
 object SimulationStatsPlotter {
-    fun plot(stats: List<SimulationStats>) {
+    fun plot(stats: List<SimulationStats>, title: String) {
         val taskIntervalCoefficientOfVariation = stats.map { it.taskIntervalCoefficientOfVariation }
         val taskSizeCoefficientOfVariation = stats.map { it.taskSizeCoefficientOfVariation }
         val averageLoad = stats.map { it.averageLoad }
@@ -21,6 +22,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Average processing time" to averageProcessingTime
@@ -29,6 +31,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Average response time" to averageResponseTime
@@ -37,6 +40,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Average delay time" to averageDelayTime
@@ -45,6 +49,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Average task interval" to averageTaskInterval
@@ -53,6 +58,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation
@@ -61,6 +67,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
                 "Average load" to averageLoad
@@ -69,6 +76,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
                 "Average processing time" to averageProcessingTime
@@ -77,6 +85,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
                 "Average response time" to averageResponseTime
@@ -85,6 +94,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
                 "Average delay time" to averageDelayTime
@@ -93,6 +103,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
                 "Average task size" to averageTaskSize
@@ -101,6 +112,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
                 "Average load" to averageLoad
@@ -109,6 +121,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Average load" to averageLoad,
                 "Average response time" to averageResponseTime
@@ -117,6 +130,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Average load" to averageLoad,
                 "Average delay time" to averageDelayTime
@@ -125,6 +139,7 @@ object SimulationStatsPlotter {
 
         savePlot(
             filename = "p${++counter}.png",
+            title = title,
             data = listOf(
                 "Average load" to averageLoad,
                 "Average processing time" to averageProcessingTime
@@ -132,10 +147,10 @@ object SimulationStatsPlotter {
         )
     }
 
-    private fun savePlot(data: List<Pair<String, *>>, filename: String) {
-        ggsave(simulationPlot(data), filename)
+    private fun savePlot(data: List<Pair<String, *>>, title: String, filename: String) {
+        ggsave(simulationPlot(data, title), filename)
     }
 
-    private fun simulationPlot(data: List<Pair<String, *>>) =
-        ggplot(data.toMap()) { x = data[0].first; y = data[1].first } + geomPoint() + geomLine() // + geomSmooth()
+    private fun simulationPlot(data: List<Pair<String, *>>, title: String) =
+        ggplot(data.toMap()) { x = data[0].first; y = data[1].first } + ggtitle(title) + geomPoint() + geomLine()
 }
