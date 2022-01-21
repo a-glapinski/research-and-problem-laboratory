@@ -18,15 +18,13 @@ fun main() {
     }
 
     val resultsParallelIfPossible = List(35) {
-        run(algorithm1, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
+        run(algorithm2, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
     }
 
     val statsGetMax = resultsGetMax.map { it.second.stats }
     val statsParallelIfPossible = resultsParallelIfPossible.map { it.second.stats }
 
-    val stats = listOf(statsGetMax, statsParallelIfPossible)
-
-    SimulationStatsPlotter.plot(stats, title = "Porównianie GetMax i ParallelIfPossible")
+    SimulationStatsPlotter.plot(statsGetMax, statsParallelIfPossible, title = "Porównianie GetMax i ParallelIfPossible")
 }
 
 fun <T : Task> run(
