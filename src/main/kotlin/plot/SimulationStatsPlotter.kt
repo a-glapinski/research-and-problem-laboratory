@@ -6,6 +6,8 @@ import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
 import jetbrains.letsPlot.label.ggtitle
+import jetbrains.letsPlot.label.ylab
+import jetbrains.letsPlot.scale.scaleColorManual
 import simulation.SimulationStats
 
 object SimulationStatsPlotter {
@@ -32,7 +34,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average processing time getMax" to averageProcessingTimeGetMax,
+                "Average processing time" to averageProcessingTimeGetMax,
                 "Average processing time parallelIfPossible" to averageProcessingTimeParallelIfPossible,
             )
         )
@@ -42,7 +44,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average response time getMax" to averageResponseTimeGetMax,
+                "Average response time" to averageResponseTimeGetMax,
                 "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
             )
         )
@@ -52,7 +54,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average delay time getMax" to averageDelayTimeGetMax,
+                "Average delay time" to averageDelayTimeGetMax,
                 "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
             )
         )
@@ -63,7 +65,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average processing time getMax" to averageProcessingTimeGetMax,
+                "Average processing time" to averageProcessingTimeGetMax,
                 "Average processing time parallelIfPossible" to averageProcessingTimeParallelIfPossible,
             )
         )
@@ -73,7 +75,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average response time getMax" to averageResponseTimeGetMax,
+                "Average response time" to averageResponseTimeGetMax,
                 "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
             )
         )
@@ -83,7 +85,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average delay time getMax" to averageDelayTimeGetMax,
+                "Average delay time" to averageDelayTimeGetMax,
                 "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
             )
         )
@@ -95,7 +97,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Average load" to averageLoad,
-                "Average response time getMax" to averageResponseTimeGetMax,
+                "Average response time" to averageResponseTimeGetMax,
                 "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
             )
         )
@@ -105,7 +107,7 @@ object SimulationStatsPlotter {
             title = title,
             data = listOf(
                 "Average load" to averageLoad,
-                "Average delay time getMax" to averageDelayTimeGetMax,
+                "Average delay time" to averageDelayTimeGetMax,
                 "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
             )
         )
@@ -128,5 +130,6 @@ object SimulationStatsPlotter {
     private fun simulationPlot(data: List<Pair<String, *>>, title: String) =
         ggplot(data.toMap()) { x = data[0].first} + ggtitle(title) +
                 geomLine(color = "red"){y = data[1].first} + geomPoint(color = "red"){y = data[1].first} +
-                geomLine(color = "blue"){y = data[2].first} + geomPoint(color = "blue"){y = data[2].first}
+                geomLine(color = "blue"){y = data[2].first} + geomPoint(color = "blue"){y = data[2].first} +
+                ylab(data[1].first)
 }
