@@ -10,13 +10,23 @@ import task.TaskDataGeneratorInputParameters
 import kotlin.math.pow
 
 fun main() {
-    val algorithm = GetMAX
-    val results = List(35) {
-        run(algorithm, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
+    val algorithm1 = GetMAX
+    val algorithm2 = ParallelIfPossible
+
+    val resultsGetMax = List(35) {
+        run(algorithm1, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
     }
 
-    val stats = results.map { it.second.stats }
-    SimulationStatsPlotter.plot(stats, title = algorithm::class.simpleName!!)
+    val resultsParallelIfPossible = List(35) {
+        run(algorithm1, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
+    }
+
+    val statsGetMax = resultsGetMax.map { it.second.stats }
+    val statsParallelIfPossible = resultsParallelIfPossible.map { it.second.stats }
+
+    val stats = listOf(statsGetMax, statsParallelIfPossible)
+
+    SimulationStatsPlotter.plot(stats, title = "Porównianie GetMax i ParallelIfPossible")
 }
 
 fun <T : Task> run(

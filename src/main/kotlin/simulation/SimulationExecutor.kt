@@ -11,7 +11,7 @@ class SimulationExecutor<T : Task>(
 ) {
     fun execute(tasks: List<TaskDefinition>): SimulationResult {
         val processedTasks = algorithm.run(tasks, availableNodesNumber, C)
-        return SimulationResult(
+        return simulation.SimulationResult(
             processedTasks = processedTasks,
             stats = algorithm.statsCalculator.calculate(processedTasks, availableNodesNumber)
         )
