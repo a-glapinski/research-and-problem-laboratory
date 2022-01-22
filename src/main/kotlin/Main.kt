@@ -11,8 +11,8 @@ import task.TaskDataGeneratorOutput
 import kotlin.math.pow
 
 fun main() {
-    val generatedData = List(6) {
-        generateData(averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = 0.0, loadMultiplier = it + 1)
+    val generatedData = List(30) {
+        generateData(averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0, loadMultiplier = 1)
     }
 
     val resultsGetMax = generatedData.map { run(GetMAX, it) }
@@ -33,7 +33,8 @@ private fun generateData(
         randomSeed = 23,
         totalTaskCount = 5000,
         phaseCount = 4,
-        taskMaxNumberOfWantedNodes = 25,
+        bigTaskMaxNumberOfWantedNodesRange = 5..10,
+        smallTaskMaxNumberOfWantedNodesRange = 1..5,
         smallTaskAverageSize = 50.0,
         bigTaskAverageSize = 120.0,
         bigLoadAverageTaskInterval = 50.0 / 2.0.pow(loadMultiplier - 1),
@@ -48,7 +49,7 @@ private fun <T : Task> run(
     schedulingAlgorithm: SchedulingAlgorithm<T>,
     taskDataGeneratorOutput: TaskDataGeneratorOutput
 ): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
-    val availableNodesNumber = 30
+    val availableNodesNumber = 15
     val simulationExecutor = SimulationExecutor(schedulingAlgorithm, availableNodesNumber, C = 1.05)
     return taskDataGeneratorOutput.inputParameters to simulationExecutor.execute(taskDataGeneratorOutput.tasks)
 }

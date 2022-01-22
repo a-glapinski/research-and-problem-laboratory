@@ -13,7 +13,8 @@ class TaskDataGenerator(
     val randomSeed: Int,
     val totalTaskCount: Int,
     val phaseCount: Int,
-    val taskMaxNumberOfWantedNodes: Int,
+    val smallTaskMaxNumberOfWantedNodesRange: IntRange,
+    val bigTaskMaxNumberOfWantedNodesRange: IntRange,
     smallTaskAverageSize: Double,
     bigTaskAverageSize: Double,
     bigLoadAverageTaskInterval: Double,
@@ -30,7 +31,7 @@ class TaskDataGenerator(
     init {
         require(totalTaskCount > 0)
         require(phaseCount > 0)
-        require(taskMaxNumberOfWantedNodes > 0)
+//        require(taskMaxNumberOfWantedNodes > 0)
         require(this.smallTaskAverageSize < this.bigTaskAverageSize)
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
         require(averageTaskIntervalDelta < bigLoadAverageTaskInterval)
@@ -59,7 +60,11 @@ class TaskDataGenerator(
                 val task = TaskDefinition(
                     id = ++taskId,
                     taskSize = taskSize,
-                    maxNumberOfWantedNodes = maxNumberOfWantedNodesRandom.nextInt(1..taskMaxNumberOfWantedNodes),
+                    maxNumberOfWantedNodes =
+                        if (i % 2 == 0)
+                            bigTaskMaxNumberOfWantedNodesRandom.nextInt(bigTaskMaxNumberOfWantedNodesRange)
+                        else
+                            smallTaskMaxNumberOfWantedNodesRandom.nextInt(smallTaskMaxNumberOfWantedNodesRange),
                     appearedAt = timer,
                     nextTaskInterval = nextTaskInterval
                 )
@@ -75,7 +80,9 @@ class TaskDataGenerator(
     }
 
     private val taskSizeRandom = getRandom()
-    private val maxNumberOfWantedNodesRandom = getRandom()
+
+    private val smallTaskMaxNumberOfWantedNodesRandom = getRandom()
+    private val bigTaskMaxNumberOfWantedNodesRandom = getRandom()
 
     private val bigLoadTaskIntervalExponentialDistribution =
         ExponentialDistribution(getRandomGenerator(), this.bigLoadAverageTaskInterval)

@@ -4,7 +4,6 @@ import jetbrains.letsPlot.export.ggsave
 import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
-import jetbrains.letsPlot.label.ggtitle
 import simulation.SimulationStats
 
 object SimulationStatsPlotter {
@@ -161,5 +160,5 @@ object SimulationStatsPlotter {
             x = data.keys.elementAt(0)
             y = data.keys.elementAt(1)
             color = data.keys.elementAt(2)
-        } + geomLine() + geomPoint() + ggtitle(title)
+        } + geomLine() + geomPoint() // + ggtitle(title)
 }
