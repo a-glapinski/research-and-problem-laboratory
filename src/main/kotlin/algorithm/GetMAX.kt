@@ -50,7 +50,7 @@ object GetMAX : SchedulingAlgorithm<GetMAXTask> {
     }
 
     private fun calculateNextEventTime(tasks: List<GetMAXTask>, timer: Double): Double {
-        val taskFinishedEvents = tasks.mapNotNull { it.processingEndedAt }.filter { it > timer }
+        val taskFinishedEvents = tasks.mapNotNull { it.processingEndedAt }.filter { it >= timer }
         val taskAppearedEvents = tasks.map { it.appearedAt }.filter { it > timer }
         return (taskFinishedEvents + taskAppearedEvents).minOf { it }
     }

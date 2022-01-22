@@ -1,13 +1,10 @@
 package plot
 
-import jetbrains.letsPlot.Pos.fill
 import jetbrains.letsPlot.export.ggsave
 import jetbrains.letsPlot.geom.geomLine
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
 import jetbrains.letsPlot.label.ggtitle
-import jetbrains.letsPlot.label.ylab
-import jetbrains.letsPlot.scale.scaleColorManual
 import simulation.SimulationStats
 
 object SimulationStatsPlotter {
@@ -26,110 +23,143 @@ object SimulationStatsPlotter {
         val averageResponseTimeParallelIfPossible = statsParallelIfPossible.map { it.averageResponseTime }
         val averageDelayTimeParallelIfPossible = statsParallelIfPossible.map { it.averageDelayTime }
 
-
         var counter = 0
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average processing time" to averageProcessingTimeGetMax,
-                "Average processing time parallelIfPossible" to averageProcessingTimeParallelIfPossible,
+            data = prepareComparisonPlotData(
+                xLabel = "Task interval coefficient of variation",
+                x = taskIntervalCoefficientOfVariation,
+                yLabel = "Average processing time",
+                firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average response time" to averageResponseTimeGetMax,
-                "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Task interval coefficient of variation",
+                x = taskIntervalCoefficientOfVariation,
+                yLabel = "Average response time",
+                firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
-                "Average delay time" to averageDelayTimeGetMax,
-                "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Task interval coefficient of variation",
+                x = taskIntervalCoefficientOfVariation,
+                yLabel = "Average delay time",
+                firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average processing time" to averageProcessingTimeGetMax,
-                "Average processing time parallelIfPossible" to averageProcessingTimeParallelIfPossible,
+            data = prepareComparisonPlotData(
+                xLabel = "Task size coefficient of variation",
+                x = taskSizeCoefficientOfVariation,
+                yLabel = "Average processing time",
+                firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average response time" to averageResponseTimeGetMax,
-                "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Task size coefficient of variation",
+                x = taskSizeCoefficientOfVariation,
+                yLabel = "Average response time",
+                firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
-                "Average delay time" to averageDelayTimeGetMax,
-                "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Task size coefficient of variation",
+                x = taskSizeCoefficientOfVariation,
+                yLabel = "Average delay time",
+                firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-
-
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Average load" to averageLoad,
-                "Average response time" to averageResponseTimeGetMax,
-                "Average response time parallelIfPossible" to averageResponseTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Average load",
+                x = averageLoad,
+                yLabel = "Average processing time",
+                firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Average load" to averageLoad,
-                "Average delay time" to averageDelayTimeGetMax,
-                "Average delay time parallelIfPossible" to averageDelayTimeParallelIfPossible
+            data = prepareComparisonPlotData(
+                xLabel = "Average load",
+                x = averageLoad,
+                yLabel = "Average response time",
+                firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
 
-        savePlot(
+        saveComparisonPlot(
             filename = "p${++counter}.png",
             title = title,
-            data = listOf(
-                "Average load" to averageLoad,
-                "Average processing time getMax" to averageProcessingTimeGetMax,
-                "Average processing time parallelIfPossible" to averageProcessingTimeParallelIfPossible,
+            data = prepareComparisonPlotData(
+                xLabel = "Average load",
+                x = averageLoad,
+                yLabel = "Average delay time",
+                firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
+                secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
             )
         )
     }
 
-    private fun savePlot(data: List<Pair<String, *>>, title: String, filename: String) {
-        ggsave(simulationPlot(data, title), filename)
+    private fun prepareComparisonPlotData(xLabel: String, x: List<Double>,
+                                          yLabel: String,
+                                          firstAlgorithmY: Pair<List<Double>, String>,
+                                          secondAlgorithmY: Pair<List<Double>, String>): Map<String, *> {
+        val firstAlgorithmStats = firstAlgorithmY.first.mapIndexed { i, stat ->
+            Triple(x[i], stat, firstAlgorithmY.second)
+        }
+        val secondAlgorithmStats = secondAlgorithmY.first.mapIndexed { i, stat ->
+            Triple(x[i], stat, secondAlgorithmY.second)
+        }
+        val stats = firstAlgorithmStats + secondAlgorithmStats
+        return mapOf(
+            xLabel to stats.map { it.first },
+            yLabel to stats.map { it.second },
+            "Algorithm" to stats.map { it.third }
+        )
     }
 
-    private fun simulationPlot(data: List<Pair<String, *>>, title: String) =
-        ggplot(data.toMap()) { x = data[0].first} + ggtitle(title) +
-                geomLine(color = "red"){y = data[1].first} + geomPoint(color = "red"){y = data[1].first} +
-                geomLine(color = "blue"){y = data[2].first} + geomPoint(color = "blue"){y = data[2].first} +
-                ylab(data[1].first)
+    private fun saveComparisonPlot(data: Map<String, *>, title: String, filename: String) {
+        ggsave(simulationComparisonPlot(data, title), filename)
+    }
+
+    private fun simulationComparisonPlot(data: Map<String, *>, title: String) =
+        ggplot(data) {
+            x = data.keys.elementAt(0)
+            y = data.keys.elementAt(1)
+            color = data.keys.elementAt(2)
+        } + geomLine() + geomPoint() + ggtitle(title)
 }
