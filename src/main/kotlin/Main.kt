@@ -7,30 +7,34 @@ import simulation.SimulationResult
 import task.Task
 import task.TaskDataGenerator
 import task.TaskDataGeneratorInputParameters
+import task.TaskDataGeneratorOutput
 import kotlin.math.pow
 
 fun main() {
-    val algorithm = GetMAX
-    val results = List(35) {
-        run(algorithm, averageTaskIntervalDelta = 0.0, averageTaskSizeDelta = it.toDouble(), loadMultiplier = 1)
+    val generatedData = List(30) {
+        generateData(averageTaskIntervalDelta = it.toDouble(), averageTaskSizeDelta = 0.0, loadMultiplier = 1)
     }
 
-    val stats = results.map { it.second.stats }
-    SimulationStatsPlotter.plot(stats, title = algorithm::class.simpleName!!)
+    val resultsGetMax = generatedData.map { run(GetMAX, it) }
+    val resultsParallelIfPossible = generatedData.map { run(ParallelIfPossible, it) }
+
+    val statsGetMax = resultsGetMax.map { it.second.stats }
+    val statsParallelIfPossible = resultsParallelIfPossible.map { it.second.stats }
+
+    SimulationStatsPlotter.plot(statsGetMax, statsParallelIfPossible, title = "Porównanie GetMax i ParallelIfPossible")
 }
 
-fun <T : Task> run(
-    schedulingAlgorithm: SchedulingAlgorithm<T>,
+private fun generateData(
     averageTaskIntervalDelta: Double,
     averageTaskSizeDelta: Double,
     loadMultiplier: Int
-): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
-    val availableNodesNumber = 30
+): TaskDataGeneratorOutput {
     val taskDataGenerator = TaskDataGenerator(
         randomSeed = 23,
         totalTaskCount = 5000,
         phaseCount = 4,
-        taskMaxNumberOfWantedNodes = 25,
+        bigTaskMaxNumberOfWantedNodesRange = 5..10,
+        smallTaskMaxNumberOfWantedNodesRange = 1..5,
         smallTaskAverageSize = 50.0,
         bigTaskAverageSize = 120.0,
         bigLoadAverageTaskInterval = 50.0 / 2.0.pow(loadMultiplier - 1),
@@ -38,7 +42,14 @@ fun <T : Task> run(
         averageTaskIntervalDelta = averageTaskIntervalDelta,
         averageTaskSizeDelta = averageTaskSizeDelta
     )
-    val taskDataGeneratorOutput = taskDataGenerator.generate()
-    val simulationExecutor = SimulationExecutor(schedulingAlgorithm, availableNodesNumber)
+    return taskDataGenerator.generate()
+}
+
+private fun <T : Task> run(
+    schedulingAlgorithm: SchedulingAlgorithm<T>,
+    taskDataGeneratorOutput: TaskDataGeneratorOutput
+): Pair<TaskDataGeneratorInputParameters, SimulationResult> {
+    val availableNodesNumber = 15
+    val simulationExecutor = SimulationExecutor(schedulingAlgorithm, availableNodesNumber, C = 1.05)
     return taskDataGeneratorOutput.inputParameters to simulationExecutor.execute(taskDataGeneratorOutput.tasks)
 }

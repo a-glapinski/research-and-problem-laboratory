@@ -43,10 +43,11 @@ object ParallelIfPossible : SchedulingAlgorithm<ParallelIfPossibleTask> {
                     break
                 }
             }
-            val active = ready.filter { it.processingStartedAt != null }
+            val active = ready.filter { it.currentNumberOfNodes > 0 }
             // obliczanie przewidywanego czasu zakończenia zadania przy aktualnej liczbie węzłów
             for (task in active) {
-                task.estimatedProcessingEndedAt = (timer + task.calculateProcessingTime(task.currentNumberOfNodes, 1.05, task.processingTime)).round(2)
+                task.estimatedProcessingEndedAt =
+                    (timer + task.calculateProcessingTime(task.currentNumberOfNodes, C, task.remainingRatio)).round(2)
             }
             // sprawdzić, kiedy wystąpi kolejne zdarzenie i uaktualnić completion_percentage
             nextEventTime = calculateNextEventTime(tasks = parallelIfPossibleTasks, timer)
@@ -65,23 +66,16 @@ object ParallelIfPossible : SchedulingAlgorithm<ParallelIfPossibleTask> {
     }
 
     private fun updateTask(task: ParallelIfPossibleTask, lastTimeWindowLength: Double, timer: Double) {
-        if (task.currentNumberOfNodes > 0) task.processingTime = task.processingTime + lastTimeWindowLength
-        task.processingDone = task.currentNumberOfNodes * lastTimeWindowLength
-//        task.processingParallelDone = (task.processingParallelDone + lastTimeWindowLength * task.currentNumberOfNodes).round(2)
-        task.estimatedProcessingEndedAt?.let { estimatedProcessingEndedAt ->
-            if (estimatedProcessingEndedAt >= timer * 0.999 && estimatedProcessingEndedAt * 0.999 <= timer) {
-                task.processingEndedAt = timer
-            }
+        task.processingTime = (task.processingTime + lastTimeWindowLength).round(2)
+
+        val estimatedProcessingTime = task.estimatedProcessingEndedAt!! - (timer - lastTimeWindowLength)
+        val processingElapsedRatio = (lastTimeWindowLength / estimatedProcessingTime).round(2)
+        task.remainingRatio = (task.remainingRatio - task.remainingRatio * processingElapsedRatio).round(2)
+
+        if (task.remainingRatio <= 0.0) {
+            task.processingEndedAt = timer
         }
     }
-
-//    private fun calculateEstimatedProcessingEndedAt(task: ParallelIfPossibleTask, timer: Double): Double {
-//        return timer + calculateTimeToBeingCompleted(task)
-//    }
-
-//    private fun calculateTimeToBeingCompleted(task: ParallelIfPossibleTask): Double {
-//        return ((task.taskSize.parallelTime - task.processingParallelDone) / task.currentNumberOfNodes).round(2)
-//    }
 
     private fun calculateNextEventTime(tasks: List<ParallelIfPossibleTask>, timer: Double): Double? {
         val tasksInProgress = tasks.mapNotNull { it.estimatedProcessingEndedAt }.filter { it > timer }
@@ -101,7 +95,7 @@ data class ParallelIfPossibleTask(
     override val nextTaskInterval: Double,
     var processingTime: Double = 0.0,
     var currentNumberOfNodes: Int = 0,
-    var processingDone: Double = 0.0,
+    var remainingRatio: Double = 1.0,
     var processingStartedAt: Double? = null,
     var processingEndedAt: Double? = null,
     var estimatedProcessingEndedAt: Double? = null
