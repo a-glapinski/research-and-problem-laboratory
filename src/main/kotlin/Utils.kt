@@ -8,13 +8,6 @@ import org.apache.commons.math3.util.Precision
 fun erlangDistribution(randomGenerator: RandomGenerator, shape: Int, scale: Double) =
     GammaDistribution(randomGenerator, shape.toDouble(), scale)
 
-@JvmInline
-value class Probability(val value: Double) {
-    init {
-        require(value in 0.0..1.0)
-    }
-}
-
 fun Double.round(scale: Int) =
     Precision.round(this, scale)
 

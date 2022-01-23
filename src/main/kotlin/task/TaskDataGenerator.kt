@@ -31,12 +31,12 @@ class TaskDataGenerator(
     init {
         require(totalTaskCount > 0)
         require(phaseCount > 0)
-//        require(taskMaxNumberOfWantedNodes > 0)
+        require(smallTaskMaxNumberOfWantedNodesRange.first > 0)
+        require(bigTaskMaxNumberOfWantedNodesRange.first > 0)
         require(this.smallTaskAverageSize < this.bigTaskAverageSize)
         require(this.bigLoadAverageTaskInterval < this.smallLoadAverageTaskInterval)
         require(averageTaskIntervalDelta < bigLoadAverageTaskInterval)
         require(averageTaskSizeDelta < smallTaskAverageSize)
-//        require(listOf(averageTaskIntervalDelta, averageTaskSizeDelta).any { it == 0.0 })
     }
 
     fun generate(): TaskDataGeneratorOutput {
