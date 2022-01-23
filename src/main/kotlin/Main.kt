@@ -21,7 +21,7 @@ fun main() {
     val statsGetMax = resultsGetMax.map { it.second.stats }
     val statsParallelIfPossible = resultsParallelIfPossible.map { it.second.stats }
 
-    SimulationStatsPlotter.plot(statsGetMax, statsParallelIfPossible, title = "Porównanie GetMax i ParallelIfPossible")
+    SimulationStatsPlotter.plot(statsGetMax, statsParallelIfPossible)
 }
 
 private fun generateData(

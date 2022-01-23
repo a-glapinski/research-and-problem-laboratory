@@ -7,7 +7,7 @@ import jetbrains.letsPlot.ggplot
 import simulation.SimulationStats
 
 object SimulationStatsPlotter {
-    fun plot(statsGetMax: List<SimulationStats>, statsParallelIfPossible: List<SimulationStats>, title: String) {
+    fun plot(statsGetMax: List<SimulationStats>, statsParallelIfPossible: List<SimulationStats>) {
         val taskIntervalCoefficientOfVariation = statsGetMax.map { it.taskIntervalCoefficientOfVariation }
         val taskSizeCoefficientOfVariation = statsGetMax.map { it.taskSizeCoefficientOfVariation }
         val averageLoad = statsGetMax.map { it.averageLoad }
@@ -25,111 +25,152 @@ object SimulationStatsPlotter {
         var counter = 0
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task interval coefficient of variation",
                 x = taskIntervalCoefficientOfVariation,
                 yLabel = "Average processing time",
                 firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task interval coefficient of variation",
                 x = taskIntervalCoefficientOfVariation,
                 yLabel = "Average response time",
                 firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task interval coefficient of variation",
                 x = taskIntervalCoefficientOfVariation,
                 yLabel = "Average delay time",
                 firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task size coefficient of variation",
                 x = taskSizeCoefficientOfVariation,
                 yLabel = "Average processing time",
                 firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task size coefficient of variation",
                 x = taskSizeCoefficientOfVariation,
                 yLabel = "Average response time",
                 firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Task size coefficient of variation",
                 x = taskSizeCoefficientOfVariation,
                 yLabel = "Average delay time",
                 firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Average load",
                 x = averageLoad,
                 yLabel = "Average processing time",
                 firstAlgorithmY = averageProcessingTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageProcessingTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Average load",
                 x = averageLoad,
                 yLabel = "Average response time",
                 firstAlgorithmY = averageResponseTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageResponseTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
         )
 
         saveComparisonPlot(
-            filename = "p${++counter}.png",
-            title = title,
             data = prepareComparisonPlotData(
                 xLabel = "Average load",
                 x = averageLoad,
                 yLabel = "Average delay time",
                 firstAlgorithmY = averageDelayTimeGetMax to "GetMAX",
                 secondAlgorithmY = averageDelayTimeParallelIfPossible to "Paralleled If Possible"
-            )
+            ),
+            filename = "p${++counter}.png"
+        )
+
+        savePlot(
+            data = mapOf(
+                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
+                "Average task interval" to averageTaskInterval
+            ),
+            filename = "p${++counter}.png"
+        )
+
+        savePlot(
+            data = mapOf(
+                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
+                "Task size coefficient of variation" to taskSizeCoefficientOfVariation
+            ),
+            filename = "p${++counter}.png"
+        )
+
+
+        savePlot(
+            data = mapOf(
+                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation,
+                "Average load" to averageLoad
+            ),
+            filename = "p${++counter}.png"
+        )
+
+        savePlot(
+            data = mapOf(
+                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
+                "Average task size" to averageTaskSize
+            ),
+            filename = "p${++counter}.png"
+        )
+
+        savePlot(
+            data = mapOf(
+                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
+                "Task interval coefficient of variation" to taskIntervalCoefficientOfVariation
+            ),
+            filename = "p${++counter}.png"
+        )
+
+
+        savePlot(
+            data = mapOf(
+                "Task size coefficient of variation" to taskSizeCoefficientOfVariation,
+                "Average load" to averageLoad
+            ),
+            filename = "p${++counter}.png"
         )
     }
 
@@ -151,14 +192,21 @@ object SimulationStatsPlotter {
         )
     }
 
-    private fun saveComparisonPlot(data: Map<String, *>, title: String, filename: String) {
-        ggsave(simulationComparisonPlot(data, title), filename)
+    private fun saveComparisonPlot(data: Map<String, *>, filename: String) {
+        ggsave(simulationComparisonPlot(data), filename)
     }
 
-    private fun simulationComparisonPlot(data: Map<String, *>, title: String) =
+    private fun simulationComparisonPlot(data: Map<String, *>) =
         ggplot(data) {
             x = data.keys.elementAt(0)
             y = data.keys.elementAt(1)
             color = data.keys.elementAt(2)
-        } + geomLine() + geomPoint() // + ggtitle(title)
+        } + geomLine() + geomPoint()
+
+    private fun savePlot(data: Map<String, *>, filename: String) {
+        ggsave(simulationPlot(data), filename)
+    }
+
+    private fun simulationPlot(data: Map<String, *>) =
+        ggplot(data) { x = data.keys.elementAt(0); y = data.keys.elementAt(1) } + geomPoint() + geomLine()
 }
